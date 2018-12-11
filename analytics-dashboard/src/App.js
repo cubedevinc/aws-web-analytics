@@ -7,9 +7,6 @@ import { QueryRenderer } from '@cubejs-client/react';
 import { Spin } from 'antd';
 import { Chart, Axis, Tooltip, Geom, Coord, Legend } from 'bizcharts';
 import moment from 'moment';
-import { fetch } from 'whatwg-fetch';
-import cookie from 'component-cookie';
-import uuidv4 from 'uuid/v4';
 import { trackPageView } from './track';
 
 const { Header, Footer, Sider, Content } = Layout;

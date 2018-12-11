@@ -25,14 +25,12 @@ module.exports.collect = async (event, context) => {
     }, 400);
   }
 
-  console.log(JSON.stringify(event));
-
   await putRecord({
     Data: JSON.stringify({
       ...body,
       timestamp: (new Date()).toISOString(),
-      //sourceIp: event.identity.sourceIp,
-      //userAgent: event.identity.userAgent
+      sourceIp: event.requestContext.identity.sourceIp,
+      userAgent: event.requestContext.identity.userAgent
     }) + '\n',
     PartitionKey: body.anonymousId,
     StreamName: 'event-collection'
