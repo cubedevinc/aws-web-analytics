@@ -9,6 +9,11 @@ import { Chart, Axis, Tooltip, Geom, Coord, Legend } from 'bizcharts';
 import moment from 'moment';
 import { trackPageView } from './track';
 
+const dateRange = [
+  moment().subtract(14,'d').format('YYYY-MM-DD'),
+  moment().format('YYYY-MM-DD'),
+];
+
 const { Header, Footer, Sider, Content } = Layout;
 
 const renderChart = (resultSet) => (
@@ -25,7 +30,7 @@ const stackedBarChartData = (resultSet) => {
     ({ xValues, yValuesArray }) =>
       yValuesArray.map(([yValues, m]) => ({
         x: resultSet.axisValuesString(xValues, ', '),
-        color: resultSet.axisValuesString([yValues[0]], ', ') || '[Empty String]',
+        color: resultSet.axisValuesString([yValues[0]], ', '),
         [yValues[1]]: m && Number.parseFloat(m)
       }))
   ).reduce((a, b) => a.concat(b));
@@ -44,11 +49,11 @@ const renderStackedBarChart = (resultSet, measure) => (
 );
 
 const renderPieChart = (resultSet, measure) => (
-  <Chart height={400} data={resultSet.chartPivot()} forceFit>
+  <Chart height={400} data={resultSet.chartPivot().map(v => ({ ...v, category: v.x }))} forceFit>
     <Coord type='theta' radius={0.75} />
     <Axis name={measure} />
-    <Legend position='right' />
-    <Tooltip />
+    <Legend position='right' name="category" title={null} />
+    <Tooltip showTitle={false}/>
     <Geom
       type="intervalStack"
       position={measure}
@@ -72,7 +77,7 @@ class App extends Component {
           </Header>
           <Content style={{ padding: '25px', margin: '25px' }}>
             <Row type="flex" justify="space-around" align="middle" gutter={24}>
-              <Col span={12}>
+              <Col lg={12} md={24}>
                 <Card title="Page Views" style={{ marginBottom: '24px' }}>
                   <QueryRenderer
                     query={{
@@ -82,10 +87,7 @@ class App extends Component {
                       "timeDimensions": [
                         {
                           "dimension": "PageViews.timestamp",
-                          "dateRange": [
-                            "2018-11-10",
-                            "2018-12-10"
-                          ],
+                          "dateRange": dateRange,
                           "granularity": "day"
                         }
                       ]
@@ -97,7 +99,7 @@ class App extends Component {
                   />
                 </Card>
               </Col>
-              <Col span={12}>
+              <Col lg={12} md={24}>
                 <Card title="Unique Visitors" style={{ marginBottom: '24px' }}>
                   <QueryRenderer
                     query={{
@@ -107,10 +109,7 @@ class App extends Component {
                       "timeDimensions": [
                         {
                           "dimension": "PageViews.timestamp",
-                          "dateRange": [
-                            "2018-11-10",
-                            "2018-12-10"
-                          ],
+                          "dateRange": dateRange,
                           "granularity": "day"
                         }
                       ]
@@ -122,7 +121,7 @@ class App extends Component {
                   />
                 </Card>
               </Col>
-              <Col span={12}>
+              <Col lg={12} md={24}>
                 <Card title="Visitor by Referrer" style={{ marginBottom: '24px' }}>
                   <QueryRenderer
                     query={{
@@ -135,10 +134,7 @@ class App extends Component {
                       "timeDimensions": [
                         {
                           "dimension": "PageViews.timestamp",
-                          "dateRange": [
-                            "2018-12-03",
-                            "2018-12-10"
-                          ],
+                          "dateRange": dateRange,
                           "granularity": "day"
                         }
                       ]
@@ -150,7 +146,7 @@ class App extends Component {
                   />
                 </Card>
               </Col>
-              <Col span={12}>
+              <Col lg={12} md={24}>
                 <Card title="Visitor by Referrer" style={{ marginBottom: '24px' }}>
                   <QueryRenderer
                     query={{
@@ -163,10 +159,7 @@ class App extends Component {
                       "timeDimensions": [
                         {
                           "dimension": "PageViews.timestamp",
-                          "dateRange": [
-                            "2018-12-03",
-                            "2018-12-10"
-                          ]
+                          "dateRange": dateRange
                         }
                       ]
                     }}
@@ -175,6 +168,11 @@ class App extends Component {
                       resultSet && renderPieChart(resultSet, "PageViews.userCount") || (<Spin />)
                     )}
                   />
+                </Card>
+              </Col>
+              <Col span={24}>
+                <Card title="Architecture" style={{ marginBottom: '24px', textAlign: 'center' }}>
+                  <img src="/architecture.png" style={{ width: '100%', maxWidth: '500px' }}/>
                 </Card>
               </Col>
             </Row>

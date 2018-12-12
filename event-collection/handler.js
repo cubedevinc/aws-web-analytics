@@ -27,10 +27,13 @@ module.exports.collect = async (event, context) => {
 
   await putRecord({
     Data: JSON.stringify({
-      ...body,
+      anonymous_id: body.anonymousId,
+      url: body.url,
+      event_type: body.eventType,
+      referrer: body.referrer,
       timestamp: (new Date()).toISOString(),
-      sourceIp: event.requestContext.identity.sourceIp,
-      userAgent: event.requestContext.identity.userAgent
+      source_ip: event.requestContext.identity.sourceIp,
+      user_agent: event.requestContext.identity.userAgent
     }) + '\n',
     PartitionKey: body.anonymousId,
     StreamName: 'event-collection'
